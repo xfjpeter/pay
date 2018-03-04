@@ -3,14 +3,12 @@
     "description": "payment package",
     "keywords": ["payment","许发君","johnxu","支付开发"],
     "homepage": "https://www.johnxu.net",
-    "license": "Apache License 2.0",
     "authors": [
         {
             "name": "johnxu",
             "email": "fsyzxz@163.com"
         }
     ],
-    "minimum-stability": "stable",
     "require" : {
         "php" : ">=7.1.0"
     },
