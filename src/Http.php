@@ -267,7 +267,13 @@ class Http
     public function toArray($is_array = true)
     {
         if (empty($this->error)) {
-            return json_decode(iconv('GBK', 'UTF-8', $this->data), $is_array);
+            // return json_decode($this->data, $is_array);
+            $encode = mb_detect_encoding($this->data, array('ASCII', 'UTF-8', 'GB2312', 'GBK', 'BIG5'));
+            if ($encode == 'UTF-8') {
+                return json_decode($this->data, $is_array);
+            } else {
+                return json_decode(iconv($encode, 'UTF-8//IGNORE', $this->data), $is_array);
+            }
         } else {
             return false;
         }

@@ -76,13 +76,7 @@ class Alipay implements IPayInterface
     {
         $payload = $this->getData($data, 'alipay.trade.query');
 
-        $res = Http::instance()->post($this->config['api_url'], $payload);
-
-        if ($res) {
-            return $res->toObject();
-        } else {
-            return false;
-        }
+        return $this->requestApi($payload);
     }
 
     /**
@@ -98,13 +92,7 @@ class Alipay implements IPayInterface
     {
         $payload = $this->getData($data, 'alipay.trade.fastpay.refund.query');
 
-        $res = Http::instance()->post($this->config['api_url'], $payload);
-
-        if ($res) {
-            return $res->toObject();
-        } else {
-            return false;
-        }
+        return $this->requestApi($payload);
     }
 
     /**
@@ -119,13 +107,8 @@ class Alipay implements IPayInterface
     public function refund(array $data)
     {
         $payload = $this->getData($data, 'alipay.trade.refund');
-        $res     = Http::instance()->post($this->config['api_url'], $payload);
 
-        if ($res) {
-            return $res->toObject();
-        } else {
-            return false;
-        }
+        return $this->requestApi($payload);
     }
 
     /**
@@ -140,13 +123,8 @@ class Alipay implements IPayInterface
     public function close(array $data)
     {
         $payload = $this->getData($data, 'alipay.trade.close');
-        $res     = Http::instance()->post($this->config['api_url'], $payload);
 
-        if ($res) {
-            return $res->toObject();
-        } else {
-            return false;
-        }
+        return $this->requestApi($payload);
     }
 
     public function cancel(array $data)
@@ -191,14 +169,14 @@ class Alipay implements IPayInterface
     /**
      * get data
      *
-     * @access protected
+     * @access public
      *
      * @param  array  $data
      * @param  string $method
      *
      * @return array
      */
-    protected function getData(array $data, string $method): array
+    public function getData(array $data, string $method): array
     {
         $this->payload['method']      = $method;
         $this->payload['biz_content'] = json_encode($data, JSON_UNESCAPED_UNICODE);
@@ -206,5 +184,26 @@ class Alipay implements IPayInterface
         $payload['sign']              = Surport::generateSign(Surport::getStringParam($payload), $this->config['app_private_key']);
 
         return $payload;
+    }
+
+    /**
+     * request alipay api
+     *
+     * @access public
+     *
+     * @param  array  $data data
+     * @param  string $method POST|GET
+     *
+     * @return mixed
+     */
+    public function requestApi(array $data, string $method = 'post')
+    {
+        $headers = ['Accept: application/json'];
+        $res     = Http::instance()->{$method}($this->config['api_url'], $data);
+        if ($res) {
+            return $res->toObject();
+        } else {
+            return false;
+        }
     }
 }
