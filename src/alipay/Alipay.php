@@ -146,7 +146,8 @@ class Alipay implements IPayInterface
         $res = Surport::verifySign($str, $this->tmp['sign'], $this->config['ali_public_key']);
 
         if (!$res) {
-            throw new \Exception('verify signature error!');
+            // throw new \Exception('verify signature error!');
+            return false;
         }
 
         return $this;

@@ -48,7 +48,8 @@ class Surport
             $type == 'RSA' ? openssl_sign($data, $signature, $res) : openssl_sign($data, $signature, $res, OPENSSL_ALGO_SHA256);
             openssl_pkey_free($res);
         } else {
-            throw new \Exception('private key error !');
+            // throw new \Exception('private key error !');
+            return false;
         }
 
         return base64_encode($signature);
@@ -82,7 +83,8 @@ class Surport
             $result = $type == 'RSA' ? (bool) openssl_verify($data, base64_decode($signature), $public_key) : (bool) openssl_verify($data, base64_decode($signature), $public_key, OPENSSL_ALGO_SHA256);
             openssl_pkey_free($res);
         } else {
-            throw new \Exception('public key error or signature error or data error !');
+            // throw new \Exception('public key error or signature error or data error !');
+            return false;
         }
 
         return $result;

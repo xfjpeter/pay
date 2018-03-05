@@ -28,9 +28,7 @@ class App
         $payload         = Surport::sorts($alipay->payload);
         $payload['sign'] = Surport::generateSign(Surport::getStringParam($payload), $alipay->config['app_private_key']);
 
-        $uri = $alipay->config['api_url'] . '?' . Surport::getStringParam($payload, true);
-
-        @header('location:' . $uri);
+        return Surport::getStringParam($payload, true);
     }
 
     /**
