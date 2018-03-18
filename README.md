@@ -1,9 +1,9 @@
-# 支付集成
+## 支付宝集成支付
 
-## 支付宝
+1. 首先保证安装好了`composer`，如果没有安装的可以前往[安装快速通道](https://getcomposer.org/download/)
+2. 打开终端，输入：`composer require johnxu/pay`即可使用
 
-### PC支付方式
-
+### 配置文件
 ```php
 // 配置文件
 $config = [
@@ -20,33 +20,107 @@ $config = [
 ];
 ```
 
-1. 付款
+### 调用支付方式
 ```php
-use johnxu\pay\Pay;
-
+// 根据文档设置好业务参数
 $business_param = [
     'out_trade_no' => date('YmdH:i:s'),
     'total_amount' => '0.01',
     'subject'      => '测试扫码支付',
     'body'         => '测试扫码支付的描述',
 ];
+
+// 如果使用laravel 或 tp5直接return即可
+
+// PC支付
 Pay::alipay($config)->pay('web', $business_param);
-// 即可跳转至支付宝扫码付款页面
+// 扫码支付(返回二维码链接，用phpqrcode)生成二维码即可
+$res = Pay::alipay($config)->pay('scan', $business_param);
+var_dump($res);
+// 当面付
+Pay::alipay($config)->pay('face', $business_param);
+// app支付
+return Pay::alipay($config)->pay('app', $business_param);
 ```
 
-2. 查询
+### 即时转账
+
+**参考网址：** [单笔转账](https://docs.open.alipay.com/api_28/alipay.fund.trans.toaccount.transfer)
+
 ```php
-use johnxu\pay\Pay;
-$data = [
-    'out_trade_no' => '20180303143713',
+$business_param = [
+    'out_biz_no' => date('YmdHis'), // 商户转账唯一订单号
+    'payee_type' => 'ALIPAY_LOGONID', 
+    //收款方账户类型
+    // 1、ALIPAY_USERID：支付宝账号对应的支付宝唯一用户号。以2088开头的16位纯数字组成。 
+    // 2、ALIPAY_LOGONID：支付宝登录号，支持邮箱和手机号格式。
+    'payee_account' => 'sdfs@163.com', // 收款方账户
+    'amount'     => '0.01', // 转账金额
 ];
-$query = Pay::alipay($config)->query($data);
-var_dump($query);
+$res = Pay::alipay($config)->pay('transfer', $business_param);
+
+var_dump($res); // 打印结果
 ```
-3. 同步或异步验证签名是否正确
+
+### 查询及时转账
+**参考网址：** [查询转账订单接口](https://docs.open.alipay.com/api_28/alipay.fund.trans.order.query/)
 ```php
-use johnxu\pay\Pay;
-$config = require 'config.php';
-$res = Pay::alipay($config)->verify(); // 验证
-echo $res->out_trade_no; // 获取返回的值
+// 二者传一个即可
+$business_param = [
+    'out_biz_no' => '234214324', // 商户转账唯一订单号
+    // 'order_id' => 'asdfs', // 支付宝转账单据号
+];
+
+$res = (new Transfer())->refund(Pay::alipay($config), $business_param);
+var_dump($res); // 打印查询结果
+```
+
+### 统一收单交易退款接口
+**参考网址** [统一收单交易退款接口](https://docs.open.alipay.com/api_1/alipay.trade.refund)
+```php
+$business_param = [
+    'out_trade_no'  => '', // 订单支付时传入的商户订单号
+    // 'trade_no'   => '', // 支付宝交易号
+    'refund_amount' => '0.01', // 需要退款的金额
+];
+$res = Pay::alipay($config)->refund($business_param);
+
+var_dump($res);
+```
+
+### 统一收单交易退款查询
+**参考网址** [统一收单交易退款查询](https://docs.open.alipay.com/api_1/alipay.trade.fastpay.refund.query)
+```php
+$business_param = [
+    'out_trade_no'  => '', // 订单支付时传入的商户订单号
+    // 'trade_no'   => '', // 支付宝交易号
+    'refund_amount' => '0.01', // 需要退款的金额
+];
+$res = Pay::alipay($config)->refundQuery($business_param);
+
+var_dump($res);
+```
+
+### 统一收单线下交易查询
+**参考网址** [统一收单线下交易查询](https://docs.open.alipay.com/api_1/alipay.trade.query)
+```php
+$business_param = [
+    'out_trade_no'  => '', // 订单支付时传入的商户订单号
+    // 'trade_no'   => '', // 支付宝交易号
+];
+$res = Pay::alipay($config)->query($business_param);
+
+var_dump($res);
+```
+
+### 统一收单交易关闭接口
+**参考网址** [统一收单交易关闭接口](https://docs.open.alipay.com/api_1/alipay.trade.close)
+```php
+$business_param = [
+    'out_trade_no'  => '', // 订单支付时传入的商户订单号
+    // 'trade_no'   => '', // 支付宝交易号
+];
+$res = Pay::alipay($config)->close($business_param);
+
+var_dump($res);
 ```
