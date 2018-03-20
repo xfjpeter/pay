@@ -7,6 +7,7 @@
 namespace johnxu\pay;
 
 /**
+ *
  * @method static get(string $name, string $default = '', string $filter = '');
  * @method static post(string $name, string $default = '', string $filter = '');
  * @method static delete(string $name, string $default = '', string $filter = '');
