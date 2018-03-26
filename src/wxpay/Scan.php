@@ -16,7 +16,7 @@ class Scan
     {
         $wxpay->payload = array_merge([
             'trade_type' => $this->getTradeType(),
-            'product_id' => Support::generateNonceStr(),
+            'product_id' => Support::instance()->generateNonceStr(),
         ], $wxpay->payload);
         $payload = Support::instance()->arrayToXml(
             Support::instance()->signature($wxpay->payload, $wxpay->config['key'])
