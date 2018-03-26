@@ -142,10 +142,18 @@ $config = [
 
 ### 扫码支付
 ```php
+$business = [
+    'out_trade_no' => date("YmdHis"),
+    'total_fee'    => 1,
+    'body'         => '支付测试',
+];
+print_r(Pay::wxpay($config)->pay('app', $business))
 ```
 
 ### APP支付
 ```php
+print_r(Pay::wxpay($config)->pay('app', $business));
+// {"appid":"wx426b3015555a46be","partnerid":"1900009851","prepayid":"wx2018032613390793349092c30094032721","noncestr":"vBURayiSZTlEaUvq","timestamp":1522042747,"package":"Sign=WXPay","sign":"0EDD2A627366FC5724F5EAD54F32A442"}
 ```
 
 ### 订单查询
