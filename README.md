@@ -124,3 +124,71 @@ $res = Pay::alipay($config)->close($business_param);
 
 var_dump($res);
 ```
+
+
+## 微信支付
+> 配置文件如下
+```php
+$config = [
+    'appid'          => 'wx426b3015555a46be',
+    'mch_id'         => '1900009851',
+    'notify_url'     => 'http://pay.johnxu.net/notiry_url.php',
+    'key'            => '8934e7d15453e97507ef794cf7b0519d',
+    'api_uri'        => 'https://api.mch.weixin.qq.com',
+    'apiclient_cert' => 'apiclient_cert.pem', // 证书路径(尽量写绝对路径)
+    'apiclient_key'  => 'apiclient_key.pem', // 证书路径(尽量写绝对路径)
+];
+```
+
+### 扫码支付
+```php
+```
+
+### APP支付
+```php
+```
+
+### 订单查询
+```php
+print_r(Pay::wxpay($config)->query([
+    'out_trade_no' => '20180326113409',
+]));
+```
+
+### 撤销订单
+```php
+// 需要证书
+print_r(Pay::wxpay($config)->reverse([
+    'out_trade_no' => '20180326113409',
+]));
+```
+
+### 申请退款
+```php
+// 需要证书
+print_r(Pay::wxpay($config)->refund([
+    'out_trade_no'  => '20180326113409', // 商户订单号
+    'out_refund_no' => date('YmdHis'), // 退款订单号
+    'total_fee'     => 1, // 总金额
+    'refund_fee'    => 1, // 退款金额
+]));
+```
+
+### 退款查询
+```php
+// 下面四个参数随便选个一即可
+print_r(Pay::wxpay($config)->queryRefund([
+    'out_trade_no'      => '20180326113409', // 商户订单号
+    // 'transaction_id' => '', // 微信订单号
+    // 'out_refund_no'  => '', // 商户退款单号
+    // 'refund_id'      => '', // 微信退款单号
+]));
+```
+
+### 关闭订单
+```php
+// 关闭订单只能用商户订单号
+print_r(Pay::wxpay($config)->close([
+    'out_trade_no' => '20180326113409',
+]));
+```

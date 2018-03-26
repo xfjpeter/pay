@@ -4,7 +4,7 @@ namespace johnxu\pay\wxpay;
 /**
  * pay interface
  */
-interface InterfaceName
+interface WxpayInterface
 {
     /**
      * Unified order
