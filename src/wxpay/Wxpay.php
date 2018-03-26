@@ -48,7 +48,8 @@ class Wxpay implements WxpayInterface
         $class = __NAMESPACE__ . '\\' . ucfirst($method);
 
         if ($class instanceof IPayInterface) {
-            throw new \Exception('not found ' . $class);
+            // throw new \Exception('not found ' . $class);
+            return false;
         }
         $app           = new $class();
         $this->payload = array_merge($this->payload, $params);
@@ -70,7 +71,8 @@ class Wxpay implements WxpayInterface
         $uri     = $this->config['api_uri'] . '/pay/orderquery';
         $payload = array_merge($this->param, $data);
         if (!isset($payload['transaction_id']) && !isset($payload['out_trade_no'])) {
-            throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            return false;
         }
         $data = Support::arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
@@ -93,7 +95,8 @@ class Wxpay implements WxpayInterface
         $uri     = $this->config['api_uri'] . '/secapi/pay/reverse';
         $payload = array_merge($this->param, $data);
         if (!isset($payload['transaction_id']) && !isset($payload['out_trade_no'])) {
-            throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            return false;
         }
         $data = Support::arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
@@ -116,7 +119,8 @@ class Wxpay implements WxpayInterface
         $uri     = $this->config['api_uri'] . '/pay/closeorder';
         $payload = array_merge($this->param, $data);
         if (!isset($payload['out_trade_no'])) {
-            throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            return false;
         }
         $data = Support::arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
@@ -139,7 +143,8 @@ class Wxpay implements WxpayInterface
         $uri     = $this->config['api_uri'] . '/secapi/pay/refund';
         $payload = array_merge($this->param, $data);
         if (!isset($payload['transaction_id']) && !isset($payload['out_trade_no'])) {
-            throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            return false;
         }
         $data = Support::arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
@@ -162,7 +167,8 @@ class Wxpay implements WxpayInterface
         $uri     = $this->config['api_uri'] . '/pay/refundquery';
         $payload = array_merge($this->param, $data);
         if (!isset($payload['transaction_id']) && !isset($payload['out_trade_no'])) {
-            throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
+            return false;
         }
         $data = Support::arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
@@ -180,19 +186,29 @@ class Wxpay implements WxpayInterface
      *
      * @access public
      *
-     * @param  string $data
-     *
-     * @return bool
+     * @return johnxu\pay\wxpay\Wxpay
      */
-    public function verify(array $data): bool
+    public function verify()
     {
-        if (!isset($data['sign'])) {
-            throw new WxpayException("Not found sign in data");
+        $xml = file_get_contents('php://input');
+        try {
+            $data = Support::instance()->xmlToArray($xml);
+        } catch (WxpayException $e) {
+            file_put_contents('/tmp/wxpay_error.txt');
+            return false;
         }
-        $signature = $data['sign'];
-        $res       = Support::instance()->signature($data);
-        if ($res['sign'] == $signature) {
-            return true;
+        if (!isset($data['sign'])) {
+            // throw new WxpayException("Not found sign in data");
+            return false;
+        }
+        $res = Support::instance()->signature($data, $this->config['key']);
+        if ($res['sign'] == $data['sign']) {
+            $queryRes = $this->query(['transaction_id' => $data['transaction_id']]);
+            if ($queryRes['return_code'] == 'SUCCESS' && $queryRes['trade_state'] == 'SUCCESS') {
+                return $data;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -230,12 +246,14 @@ class Wxpay implements WxpayInterface
         if ($res) {
             $res = Support::instance()->xmlToArray($res);
         } else {
-            throw new WxpayException("Requset Wechat api error");
+            // throw new WxpayException("Requset Wechat api error");
+            return false;
         }
 
         try {
             if ($res['return_code'] == 'FAIL') {
                 throw new WxpayException($res['return_msg']);
+                return false;
             }
         } catch (WxpayException $e) {
             exit($e->customFunction());
