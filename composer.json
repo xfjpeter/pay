@@ -10,12 +10,14 @@
         }
     ],
     "require" : {
-        "php" : ">=7.1.0"
+        "php" : ">=7.1.0",
+        "aferrandini/phpqrcode": "1.0.1"
     },
     "require-dev": {},
     "autoload": {
         "psr-4": {
             "johnxu\\pay\\": "src/"
-        }
+        },
+        "files": ["vendor/johnxu/pay/src/Qrcode.php"]
     }
 }
