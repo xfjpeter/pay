@@ -200,3 +200,16 @@ print_r(Pay::wxpay($config)->close([
     'out_trade_no' => '20180326113409',
 ]));
 ```
+
+### 异步通知
+```php
+$res = Pay::wxpay($config)->verify();
+
+if ($res) {
+    print_r($res);
+} else {
+    echo '异步验证失败';
+}
+
+echo 'SUCCESS';
+```
