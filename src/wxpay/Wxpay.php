@@ -74,7 +74,7 @@ class Wxpay implements WxpayInterface
             // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
             return false;
         }
-        $data = Support::arrayToXml(
+        $data = Support::instance()->arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
         );
 
@@ -98,7 +98,7 @@ class Wxpay implements WxpayInterface
             // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
             return false;
         }
-        $data = Support::arrayToXml(
+        $data = Support::instance()->arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
         );
 
@@ -122,7 +122,7 @@ class Wxpay implements WxpayInterface
             // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
             return false;
         }
-        $data = Support::arrayToXml(
+        $data = Support::instance()->arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
         );
 
@@ -146,7 +146,7 @@ class Wxpay implements WxpayInterface
             // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
             return false;
         }
-        $data = Support::arrayToXml(
+        $data = Support::instance()->arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
         );
 
@@ -170,7 +170,7 @@ class Wxpay implements WxpayInterface
             // throw new WxpayException("transaction_id OR out_trade_no Not Empty");
             return false;
         }
-        $data = Support::arrayToXml(
+        $data = Support::instance()->arrayToXml(
             Support::instance()->signature($payload, $this->config['key'])
         );
 
