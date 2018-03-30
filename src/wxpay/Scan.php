@@ -45,7 +45,7 @@ class Scan
      *
      * @return mixed
      */
-    public function getScanTwo(bool $uri)
+    public function getScanTwo(bool $uri = false)
     {
         if ($this->returnData['return_code'] == 'SUCCESS' && $this->returnData['return_msg'] == 'OK') {
             ;

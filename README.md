@@ -130,8 +130,7 @@ var_dump($res);
 > 配置文件如下
 ```php
 $config = [
-    'appid'          => 'wx426b3015555a46be', // 微信appid
-    'mini_appid'     => 'dafdfsd', // 小程序id（用于小程序支付）
+    'appid'          => 'wx426b3015555a46be', // 微信appid(如果是小程序，那么就是小程序的id)
     'mch_id'         => '1900009851',
     'notify_url'     => 'http://pay.johnxu.net/notiry_url.php',
     'key'            => '8934e7d15453e97507ef794cf7b0519d',

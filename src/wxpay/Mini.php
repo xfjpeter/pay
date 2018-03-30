@@ -33,7 +33,7 @@ class Mini
         $result         = $wxpay->unifiedorder($payload);
 
         if ($result['return_code'] == 'SUCCESS' && $result['return_msg'] == 'OK') {
-            $data['appId']        = $wxpay->config['mini_appid'];
+            $data['appId']        = $wxpay->config['appid'];
             $data['signType']     = $wxpay->config['sign_type'] ?? 'MD5';
             $data['nonceStr']     = Support::instance()->generateNonceStr();
             $data['timeStamp']    = time();
