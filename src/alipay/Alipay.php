@@ -1,19 +1,24 @@
 <?php
+
 namespace johnxu\pay\alipay;
 
-use johnxu\pay\alipay\Surport;
 use johnxu\pay\Http;
 use johnxu\pay\Request;
 
 class Alipay implements IPayInterface
 {
     /**
-     * config
+     * @var array
      */
     public $config = [];
 
     /**
-     * alipay payload
+     * @var
+     */
+    private $tmp;
+
+    /**
+     * @var array
      */
     public $payload;
 
@@ -48,7 +53,9 @@ class Alipay implements IPayInterface
      * @param  string $method pay method
      * @param  array  $params business data
      *
-     * @return mixed;
+     * @return mixed
+     *
+     * @throws \Exception
      */
     public function pay(string $method, array $params = [])
     {
@@ -68,7 +75,7 @@ class Alipay implements IPayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return mixed       [description]
      */
@@ -84,7 +91,7 @@ class Alipay implements IPayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return mixed       [description]
      */
@@ -100,7 +107,7 @@ class Alipay implements IPayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return mixed
      */
@@ -116,7 +123,7 @@ class Alipay implements IPayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return mixed
      */
@@ -128,14 +135,15 @@ class Alipay implements IPayInterface
     }
 
     public function cancel(array $data)
-    {}
+    {
+    }
 
     /**
-     * verify signature
+     * Verify signature
      *
      * @access public
      *
-     * @return johnxu\pay\Alipay
+     * @return $this|bool
      */
     public function verify()
     {
@@ -146,7 +154,6 @@ class Alipay implements IPayInterface
         $res = Surport::verifySign($str, $this->tmp['sign'], $this->config['ali_public_key']);
 
         if (!$res) {
-            // throw new \Exception('verify signature error!');
             return false;
         }
 
@@ -164,7 +171,7 @@ class Alipay implements IPayInterface
      */
     public function __get(string $key): string
     {
-        return isset($this->tmp[$key]) ? $this->tmp[$key] : '';
+        return isset($this->tmp[ $key ]) ? $this->tmp[ $key ] : '';
     }
 
     /**
@@ -192,15 +199,14 @@ class Alipay implements IPayInterface
      *
      * @access public
      *
-     * @param  array  $data data
+     * @param  array  $data   data
      * @param  string $method POST|GET
      *
      * @return mixed
      */
     public function requestApi(array $data, string $method = 'post')
     {
-        $headers = ['Accept: application/json'];
-        $res     = Http::instance()->{$method}($this->config['api_url'], $data);
+        $res = Http::instance()->{$method}($this->config['api_url'], $data);
         if ($res) {
             return $res->toObject();
         } else {

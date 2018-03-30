@@ -1,12 +1,27 @@
 <?php
+
 namespace johnxu\pay\wxpay;
 
 use johnxu\pay\WxpayException;
 
+/**
+ * Class Wxpay
+ * @package johnxu\pay\wxpay
+ */
 class Wxpay implements WxpayInterface
 {
+    /**
+     * @var array
+     */
     public $payload = [];
-    public $config  = [];
+    /**
+     * @var array
+     */
+    public $config = [];
+    /**
+     * @var array
+     */
+    public $param = [];
 
     /**
      * construct data
@@ -25,7 +40,7 @@ class Wxpay implements WxpayInterface
             'spbill_create_ip' => Support::instance()->getClientIp(),
             'notify_url'       => $this->config['notify_url'],
         ];
-        $this->param = [
+        $this->param             = [
             'appid'     => $this->config['appid'],
             'mch_id'    => $this->config['mch_id'],
             'nonce_str' => Support::instance()->generateNonceStr(),
@@ -62,7 +77,7 @@ class Wxpay implements WxpayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return array|void
      */
@@ -86,7 +101,7 @@ class Wxpay implements WxpayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return array|void
      */
@@ -110,7 +125,7 @@ class Wxpay implements WxpayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return mixed|array
      */
@@ -134,7 +149,7 @@ class Wxpay implements WxpayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return mixed|array
      */
@@ -158,7 +173,7 @@ class Wxpay implements WxpayInterface
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return array|void
      */
@@ -186,7 +201,7 @@ class Wxpay implements WxpayInterface
      *
      * @access public
      *
-     * @return johnxu\pay\wxpay\Wxpay
+     * @return array|bool
      */
     public function verify()
     {
@@ -195,6 +210,7 @@ class Wxpay implements WxpayInterface
             $data = Support::instance()->xmlToArray($xml);
         } catch (WxpayException $e) {
             file_put_contents('/tmp/wxpay_error.txt');
+
             return false;
         }
         if (!isset($data['sign'])) {
@@ -215,13 +231,14 @@ class Wxpay implements WxpayInterface
     }
 
     /**
-     * Get wechat return info
+     * Unifiedorder
      *
      * @access public
      *
-     * @param  string $param
+     * @param string $param
      *
-     * @return array
+     * @return array|bool|mixed
+     * @throws \Exception
      */
     public function unifiedorder(string $param)
     {
@@ -233,12 +250,14 @@ class Wxpay implements WxpayInterface
     /**
      * Requset Api
      *
-     * @access public
+     * @param string $uri
+     * @param string $data
+     * @param string $method
+     * @param null   $cert
+     * @param null   $key
      *
-     * @param  string $uri
-     * @param  string $data
-     *
-     * @return mixed
+     * @return array|bool|mixed
+     * @throws \Exception
      */
     protected function requestApi(string $uri, string $data, $method = 'POST', $cert = null, $key = null)
     {
@@ -253,6 +272,7 @@ class Wxpay implements WxpayInterface
         try {
             if ($res['return_code'] == 'FAIL') {
                 throw new WxpayException($res['return_msg']);
+
                 return false;
             }
         } catch (WxpayException $e) {

@@ -130,7 +130,8 @@ var_dump($res);
 > 配置文件如下
 ```php
 $config = [
-    'appid'          => 'wx426b3015555a46be',
+    'appid'          => 'wx426b3015555a46be', // 微信appid
+    'mini_appid'     => 'dafdfsd', // 小程序id（用于小程序支付）
     'mch_id'         => '1900009851',
     'notify_url'     => 'http://pay.johnxu.net/notiry_url.php',
     'key'            => '8934e7d15453e97507ef794cf7b0519d',
@@ -212,4 +213,11 @@ if ($res) {
 }
 
 echo 'SUCCESS';
+```
+
+### 微信小程序支付
+```php
+$res = Pay::wxpay($config)->pay('mini', $business);
+
+// 这里返回的是一个json格式的字符串
 ```

@@ -1,16 +1,26 @@
 <?php
 namespace johnxu\pay\wxpay;
 
+/**
+ * Class Scan
+ * @package johnxu\pay\wxpay
+ */
 class Scan
 {
+    /**
+     * @var
+     */
+    private $returnData;
+
     /**
      * Scan pay
      *
      * @access public
      *
-     * @param  Wxpay  $wxpay
+     * @param Wxpay $wxpay
      *
-     * @return johnxu\pay\wxpay\Scan
+     * @return $this
+     * @throws \Exception
      */
     public function pay(Wxpay $wxpay)
     {

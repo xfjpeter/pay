@@ -1,4 +1,5 @@
 <?php
+
 namespace johnxu\pay\wxpay;
 
 class Support
@@ -10,11 +11,11 @@ class Support
     }
 
     /**
-     * instance class
+     * Instance
      *
      * @access public
      *
-     * @return johnxu\pay\wxpay\Support
+     * @return Support
      */
     public static function instance()
     {
@@ -30,7 +31,7 @@ class Support
      *
      * @access public
      *
-     * @param array $data
+     * @param array  $data
      * @param string $key
      *
      * @return mixed
@@ -42,6 +43,7 @@ class Support
         }
         $stringSignTemp = self::instance()->getStringParam($data);
         $stringSignTemp .= $key ? '&key=' . $key : '';
+        $signature      = '';
         if (isset($data['sign_type'])) {
             if (strtoupper($data['sign_type']) == 'HMAC-SHA256') {
                 $signature = hash_hmac('sha256', $stringSignTemp, $key);
@@ -62,7 +64,7 @@ class Support
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return string
      */
@@ -102,7 +104,7 @@ class Support
      *
      * @access public
      *
-     * @param  array  $data
+     * @param  array $data
      *
      * @return string
      */
@@ -135,7 +137,7 @@ class Support
         $return = '';
         $strLen = strlen($str);
         for ($i = 0; $i < 16; $i++) {
-            $return .= $str[mt_rand(0, $strLen - 1)];
+            $return .= $str[ mt_rand(0, $strLen - 1) ];
         }
 
         return $return;
@@ -161,32 +163,33 @@ class Support
     }
 
     /**
-     * request http
+     * Request
      *
      * @access public
      *
-     * @param  string    $uri
-     * @param  mixed     $data
-     * @param  string    $method
-     * @param  bool|null $secret
-     * @param  string    $key
+     * @param string      $uri
+     * @param mixed       $data
+     * @param string      $method
+     * @param string|null $secret
+     * @param string|null $key
      *
      * @return mixed
+     * @throws \Exception
      */
     public function requestApi(string $uri, $data, string $method = 'get', string $secret = null, string $key = null)
     {
         $method = strtoupper($method);
         $ch     = curl_init();
         if ($method == 'GET') {
-            $uri .= '?' . !is_array($data) ?: urldecode(http_build_query($data));
+            $uri .= '?' . !is_array($data) ? : urldecode(http_build_query($data));
         }
-        $params[CURLOPT_URL]            = $uri;
-        $params[CURLOPT_RETURNTRANSFER] = 1;
-        $params[CURLOPT_SSL_VERIFYPEER] = false;
-        $params[CURLOPT_SSL_VERIFYHOST] = false;
+        $params[ CURLOPT_URL ]            = $uri;
+        $params[ CURLOPT_RETURNTRANSFER ] = 1;
+        $params[ CURLOPT_SSL_VERIFYPEER ] = false;
+        $params[ CURLOPT_SSL_VERIFYHOST ] = false;
         if ($method == 'POST') {
-            $params[CURLOPT_POST]       = 1;
-            $params[CURLOPT_POSTFIELDS] = $data;
+            $params[ CURLOPT_POST ]       = 1;
+            $params[ CURLOPT_POSTFIELDS ] = $data;
         }
 
         curl_setopt($ch, CURLOPT_URL, $uri);
@@ -197,10 +200,10 @@ class Support
             curl_setopt($ch, CURLOPT_POSTFIELDS, is_array($data) ? urldecode(http_build_query($data)) : $data);
         }
         if ($secret && $key) {
-            $params[CURLOPT_SSLCERTTYPE] = 'PEM';
-            $params[CURLOPT_SSLCERT]     = $secret;
-            $params[CURLOPT_SSLKEYTYPE]  = 'PEM';
-            $params[CURLOPT_SSLKEY]      = $key;
+            $params[ CURLOPT_SSLCERTTYPE ] = 'PEM';
+            $params[ CURLOPT_SSLCERT ]     = $secret;
+            $params[ CURLOPT_SSLKEYTYPE ]  = 'PEM';
+            $params[ CURLOPT_SSLKEY ]      = $key;
         }
         curl_setopt_array($ch, $params);
         if (curl_errno($ch)) {

@@ -1,6 +1,11 @@
 <?php
+
 namespace johnxu\pay\alipay;
 
+/**
+ * Class Surport
+ * @package johnxu\pay\alipay
+ */
 class Surport
 {
     private static $instance;
@@ -34,7 +39,7 @@ class Surport
      */
     public static function generateSign(string $data, string $private_key, string $type = 'RSA2'): string
     {
-        $search = [
+        $search      = [
             "-----BEGIN RSA PRIVATE KEY-----",
             "-----END RSA PRIVATE KEY-----",
             "\n",
@@ -63,13 +68,13 @@ class Surport
      * @param  string $data
      * @param  string $signature
      * @param  string $public_key
-     * @param  string $type       RSA|RSA2
+     * @param  string $type RSA|RSA2
      *
      * @return bool
      */
     public static function verifySign(string $data, string $signature, string $public_key, string $type = 'RSA2'): bool
     {
-        $search = [
+        $search     = [
             "-----BEGIN PUBLIC KEY-----",
             "-----END PUBLIC KEY-----",
             "\n",
@@ -136,6 +141,7 @@ class Surport
      * @param  string $data
      * @param  string $from
      * @param  string $to
+     *
      * @return string
      */
     public static function encoding(string $data, string $to = 'GBK', string $from = 'UTF-8'): string

@@ -1,16 +1,21 @@
 <?php
 namespace johnxu\pay\wxpay;
 
+/**
+ * Class App
+ * @package johnxu\pay\wxpay
+ */
 class App
 {
     /**
-     * Get app pay string
+     * App pay
      *
      * @access public
      *
-     * @param  Wxpay  $wxpay
+     * @param Wxpay $wxpay
      *
      * @return string
+     * @throws \Exception
      */
     public function pay(Wxpay $wxpay)
     {
@@ -24,7 +29,6 @@ class App
         $result = $wxpay->unifiedorder($payload);
 
         if ($result['return_code'] == 'SUCCESS' && $result['return_msg'] == 'OK') {
-            $prepay_id         = $result['prepay_id'];
             $data['appid']     = $wxpay->config['appid'];
             $data['partnerid'] = $wxpay->config['mch_id'];
             $data['prepayid']  = $result['prepay_id'];
