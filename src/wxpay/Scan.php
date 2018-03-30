@@ -41,13 +41,15 @@ class Scan
      *
      * @access public
      *
+     * @param bool $uri
+     *
      * @return mixed
      */
-    public function getScanTwo()
+    public function getScanTwo(bool $uri)
     {
         if ($this->returnData['return_code'] == 'SUCCESS' && $this->returnData['return_msg'] == 'OK') {
-            \PHPQRCode\QRcode::png($this->returnData['code_url']);
-            // return $this->returnData['code_url'];
+            ;
+            return $uri ? $this->returnData['code_url'] : \PHPQRCode\QRcode::png($this->returnData['code_url']);
         } else {
             throw new WxpayException("Unifiedorder return error: {$this->returnData['return_msg']}");
         }
