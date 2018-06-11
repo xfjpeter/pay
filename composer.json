@@ -17,7 +17,6 @@
     "autoload": {
         "psr-4": {
             "johnxu\\pay\\": "src/"
-        },
-        "files": ["vendor/johnxu/pay/src/Qrcode.php"]
+        }
     }
 }
